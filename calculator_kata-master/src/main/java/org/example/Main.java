@@ -144,77 +144,62 @@ public class Main {
         return rsl;
     }
 
-    public String calc(String inputText) throws Exception {
-        String firstOpp;
-        String secondOpp;
-        char operator = 0;
-        String result = "";
+    public String calc(String inputText) {
+        try {
+            String firstOpp;
+            String secondOpp;
+            char operator = 0;
+            String result = "";
 
+            List<Character> elements = new ArrayList<>();
+            for (char ch : inputText.trim().toCharArray()) {
+                if (ch != ' ') {
+                    elements.add(ch);
+                }
+                if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                    operator = ch;
+                }
+            }
 
-        List<Character> elements = new ArrayList<>();
-        for (char ch : inputText.trim().toCharArray()) {
-            if (ch != ' ') {
-                elements.add(ch);
+            if (operator == 0) {
+                throw new Exception("Operator is missing in the expression");
             }
-            if (ch == '+') {
-                operator = ch;
-            }
-            if (ch == '-') {
-                operator = ch;
-            }
-            if (ch == '/') {
-                operator = ch;
-            }
-            if (ch == '*') {
-                operator = ch;
-            }
-        }
-        int indexOfOperator = elements.indexOf(operator);
-        String expression = elements.stream().map(String::valueOf).collect(Collectors.joining());
 
-        firstOpp = expression.substring(0, indexOfOperator);
-        secondOpp = expression.substring(indexOfOperator + 1, expression.length());
+            int indexOfOperator = elements.indexOf(operator);
+            String expression = elements.stream().map(String::valueOf).collect(Collectors.joining());
 
-        if ((isInt(firstOpp) && isInt(secondOpp)) &&
-                ((Integer.parseInt(firstOpp) <= 10) && Integer.parseInt(secondOpp) <= 10) &&
-                ((Integer.parseInt(firstOpp) > 0) && Integer.parseInt(secondOpp) > 0)
-        ) {
+            firstOpp = expression.substring(0, indexOfOperator);
+            secondOpp = expression.substring(indexOfOperator + 1, expression.length());
+
+            if (!isInt(firstOpp) || !isInt(secondOpp)) {
+                throw new Exception("You can't mix Roman and Arabic numerals in the expression");
+            }
+
+            int firstNumber = Integer.parseInt(firstOpp);
+            int secondNumber = Integer.parseInt(secondOpp);
+
+            if (firstNumber <= 0 || firstNumber > 10 || secondNumber <= 0 || secondNumber > 10) {
+                throw new Exception("You should use numbers from 1 to 10");
+            }
+
             switch (operator) {
                 case '+':
-                    result = Integer.toString(Integer.parseInt(firstOpp) + Integer.parseInt(secondOpp));
+                    result = Integer.toString(firstNumber + secondNumber);
                     break;
                 case '-':
-                    result = Integer.toString(Integer.parseInt(firstOpp) - Integer.parseInt(secondOpp));
+                    result = Integer.toString(firstNumber - secondNumber);
                     break;
                 case '*':
-                    result = Integer.toString(Integer.parseInt(firstOpp) * Integer.parseInt(secondOpp));
+                    result = Integer.toString(firstNumber * secondNumber);
                     break;
                 case '/':
-                    result = Integer.toString(Integer.parseInt(firstOpp) / Integer.parseInt(secondOpp));
+                    result = Integer.toString(firstNumber / secondNumber);
                     break;
             }
-        } else if ((isInt(firstOpp) && !isInt(secondOpp)) || (!isInt(firstOpp) && isInt(secondOpp))) {
-            throw new Exception("you cant make expressions with various variables");
-        } else if ((isInt(firstOpp) && isInt(secondOpp)) &&
-                ((Integer.parseInt(firstOpp) > 10 || Integer.parseInt(firstOpp) <= 0)) &&
-                (Integer.parseInt(secondOpp) > 10 || Integer.parseInt(secondOpp) <= 0)) {
-            throw new Exception("you should to use numbers from 1 to 10");
-        } else {
-            switch (operator) {
-                case '+':
-                    result = convertToRome(convertToArabic(firstOpp) + convertToArabic(secondOpp));
-                    break;
-                case '-':
-                    result = convertToRome(convertToArabic(firstOpp) - convertToArabic(secondOpp));
-                    break;
-                case '*':
-                    result = convertToRome(convertToArabic(firstOpp) * convertToArabic(secondOpp));
-                    break;
-                case '/':
-                    result = convertToRome(convertToArabic(firstOpp) / convertToArabic(secondOpp));
-                    break;
-            }
+
+            return result;
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
         }
-        return result;
     }
 }
