@@ -199,6 +199,8 @@ public class Main {
                 ((Integer.parseInt(firstOpp) > 10 || Integer.parseInt(firstOpp) < 1) ||
                         (Integer.parseInt(secondOpp) > 10 || Integer.parseInt(secondOpp) < 1))) {
             throw new Exception("you should use numbers from 1 to 10");
+        } else if (operator == '-' && convertToArabic(firstOpp) < convertToArabic(secondOpp)) {
+            throw new Exception("Roman numerals don't represent negative numbers");
         } else {
             switch (operator) {
                 case '+':
